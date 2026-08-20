@@ -1,0 +1,311 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Happy Birthday Thadar Cho</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background-color: #000;
+            color: #00ff66;
+            font-family: 'Courier New', Courier, monospace;
+            height: 100vh;
+            width: 100vw;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            overflow: hidden;
+            text-align: center;
+            position: relative;
+        }
+
+        /* Screen Fade Out at 1:26 */
+        #main-container {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            transition: opacity 1.5s ease-in-out;
+            opacity: 1;
+            position: relative;
+            z-index: 2;
+        }
+
+        /* ASCII Box Style */
+        .ascii-card {
+            border: 2px dashed #00ff66;
+            padding: 25px 35px;
+            max-width: 80%;
+            box-shadow: 0 0 15px rgba(0, 255, 102, 0.3);
+            background: rgba(0, 0, 0, 0.9);
+            white-space: pre-wrap;
+            line-height: 1.6;
+            font-size: 1.2rem;
+            text-shadow: 0 0 8px #00ff66;
+            
+            /* Smooth Fade Animation */
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+            position: relative;
+            z-index: 10; /* Keep text above video */
+        }
+
+        /* Full Screen Colored ASCII Video Canvas */
+        #ascii-canvas {
+            display: none;
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100vw;
+            height: 100vh;
+            z-index: 1; /* Behind the text */
+            opacity: 0;
+            transition: opacity 1s ease-in-out;
+        }
+
+        /* Start Overlay */
+        #start-overlay {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #000;
+            display: flex;
+            flex-direction: column;
+            justify-content: center;
+            align-items: center;
+            z-index: 100;
+        }
+
+        .btn-start {
+            background: transparent;
+            color: #00ff66;
+            border: 2px solid #00ff66;
+            padding: 15px 30px;
+            font-family: 'Courier New', Courier, monospace;
+            font-size: 1.2rem;
+            cursor: pointer;
+            text-shadow: 0 0 5px #00ff66;
+            box-shadow: 0 0 10px rgba(0, 255, 102, 0.4);
+            transition: all 0.3s ease;
+        }
+
+        .btn-start:hover {
+            background: #00ff66;
+            color: #000;
+        }
+
+        .fade-in {
+            opacity: 1 !important;
+        }
+
+        /* CRT Scanline Effect */
+        body::before {
+            content: " ";
+            display: block;
+            position: absolute;
+            top: 0; left: 0; bottom: 0; right: 0;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%);
+            background-size: 100% 4px;
+            z-index: 50;
+            pointer-events: none;
+        }
+    </style>
+</head>
+<body>
+
+    <div id="start-overlay">
+        <button class="btn-start" onclick="startExperience()">[ CLICK TO START ]</button>
+    </div>
+
+    <div id="main-container">
+        <div id="ascii-text" class="ascii-card"></div>
+    </div>
+
+    <canvas id="ascii-canvas"></canvas>
+
+    <audio id="bg-audio" src="audio.mp3" preload="auto"></audio>
+    <video id="bg-video" src="video.mp4" playsinline webkit-playsinline muted style="display:none;" crossorigin="anonymous"></video>
+
+    <canvas id="hidden-canvas" style="display:none;"></canvas>
+
+    <script>
+        const audio = document.getElementById('bg-audio');
+        const video = document.getElementById('bg-video');
+        const asciiText = document.getElementById('ascii-text');
+        const asciiCanvas = document.getElementById('ascii-canvas');
+        const mainContainer = document.getElementById('main-container');
+        const startOverlay = document.getElementById('start-overlay');
+        
+        const hiddenCanvas = document.getElementById('hidden-canvas');
+        const hiddenCtx = hiddenCanvas.getContext('2d', { willReadFrequently: true });
+        const visibleCtx = asciiCanvas.getContext('2d');
+
+        // ASCII Characters (from dark to light)
+        const asciiChars = ["@", "#", "S", "%", "?", "*", "+", ";", ":", ",", ".", " "];
+
+        let isVideoPlaying = false;
+        let animationFrameId = null;
+
+        function startExperience() {
+            startOverlay.style.display = 'none';
+            audio.play().catch(e => console.log("Audio play error:", e));
+            setInterval(updateTimeline, 200);
+        }
+
+        function updateTimeline() {
+            const currentTime = audio.currentTime;
+
+            // 0:02 to 0:15
+            if (currentTime >= 2 && currentTime < 15) {
+                showText("========================\nHappy Birthday Thadar Cho\n========================");
+            } 
+            // 0:20 to 0:50
+            else if (currentTime >= 20 && currentTime < 50) {
+                showText(
+`Happy Birthday ပါ သဒ္ဒါချိုရေ
+
+အခုမွေးနေ့မှစလို့ နောက်နှစ်ပေါင်းများစွာကို ကိုယ်ချစ်ရတဲ့သူတွေ
+မိသားစုတွေနဲ့တူတူ ပျော်ရွှင်စွာဖြတ်သန်းနိုင်ပါစေ။
+
+ကိုယ်ဖြစ်ချင်တာတွေ ဖြစ်ပြီး မဖြစ်ချင်တာတွေ မဖြစ်ပါစေနဲ့လို့
+ငါဒီကနေဆုတောင်းပေးလိုက်ပါတယ် သူငယ်ချင်းရေ။`
+                );
+            } 
+            // 0:53 to 0:57
+            else if (currentTime >= 53 && currentTime < 58) {
+                showText("But What If I Call");
+            } 
+            // 0:58 to 1:02
+            else if (currentTime >= 58 && currentTime < 63) {
+                showText("And You Pick Up The Phone");
+            } 
+            // 1:03 to 1:05
+            else if (currentTime >= 63 && currentTime < 66) {
+                showText("And I Use This Holiday");
+            } 
+            // 1:06 to 1:10
+            else if (currentTime >= 66 && currentTime < 71) {
+                showText("To Make My Way To Your Ghost");
+            } 
+            // 1:11 to 1:26 - Fullscreen Colored ASCII Video Play
+            else if (currentTime >= 71 && currentTime < 86) { 
+                asciiText.classList.remove('fade-in');
+                asciiCanvas.style.display = 'block';
+                asciiCanvas.classList.add('fade-in');
+                
+                if (!isVideoPlaying) {
+                    video.currentTime = 0;
+                    video.play();
+                    isVideoPlaying = true;
+                    renderAsciiFrame();
+                }
+            } 
+            // 1:26 Onwards - Fade Out
+            else if (currentTime >= 86) {
+                mainContainer.style.opacity = '0'; // Fade out texts container
+                asciiCanvas.classList.remove('fade-in'); // Fade out video
+                asciiCanvas.style.opacity = '0';
+
+                // Fade out Audio
+                if (audio.volume > 0.05) {
+                    audio.volume -= 0.05;
+                } else {
+                    audio.volume = 0;
+                    audio.pause();
+                }
+
+                if (isVideoPlaying) {
+                    video.pause();
+                    isVideoPlaying = false;
+                    cancelAnimationFrame(animationFrameId);
+                }
+            } 
+            // Clear text during empty spaces
+            else {
+                asciiText.classList.remove('fade-in');
+                if (currentTime < 71) {
+                    asciiCanvas.classList.remove('fade-in');
+                    asciiCanvas.style.display = 'none';
+                }
+            }
+        }
+
+        let currentContent = "";
+        function showText(text) {
+            if (currentContent !== text) {
+                currentContent = text;
+                asciiText.innerText = text;
+                asciiText.classList.add('fade-in');
+            }
+        }
+
+        // --- Render Colored ASCII Frame ---
+        function renderAsciiFrame() {
+            if (!isVideoPlaying || video.paused || video.ended) return;
+
+            // Density of ASCII Characters (Higher number = smaller text & more details)
+            const cols = 120; 
+            const rows = Math.floor(cols * (video.videoHeight / video.videoWidth) * 0.55);
+
+            hiddenCanvas.width = cols;
+            hiddenCanvas.height = rows;
+            hiddenCtx.drawImage(video, 0, 0, cols, rows);
+            const imgData = hiddenCtx.getImageData(0, 0, cols, rows).data;
+
+            // Make Visible Canvas match screen size perfectly
+            asciiCanvas.width = window.innerWidth;
+            asciiCanvas.height = window.innerHeight;
+
+            // Clear Background
+            visibleCtx.fillStyle = "black";
+            visibleCtx.fillRect(0, 0, asciiCanvas.width, asciiCanvas.height);
+
+            const charWidth = asciiCanvas.width / cols;
+            const charHeight = asciiCanvas.height / rows;
+            
+            // Adjust Font Size dynamically based on screen
+            const fontSize = Math.max(charWidth, charHeight) * 1.1; 
+            visibleCtx.font = `bold ${fontSize}px 'Courier New', monospace`;
+            visibleCtx.textBaseline = "top";
+
+            // Draw colored characters
+            for (let y = 0; y < rows; y++) {
+                for (let x = 0; x < cols; x++) {
+                    const offset = (y * cols + x) * 4;
+                    const r = imgData[offset];
+                    const g = imgData[offset + 1];
+                    const b = imgData[offset + 2];
+                    
+                    const brightness = (r + g + b) / 3;
+                    // Map brightness to array index
+                    const charIndex = Math.floor((brightness / 255) * (asciiChars.length - 1));
+                    const char = asciiChars[charIndex];
+
+                    // Set Exact Color from Original Video
+                    visibleCtx.fillStyle = `rgb(${r}, ${g}, ${b})`;
+                    visibleCtx.fillText(char, x * charWidth, y * charHeight);
+                }
+            }
+
+            animationFrameId = requestAnimationFrame(renderAsciiFrame);
+        }
+
+        // Re-adjust canvas size if window is resized
+        window.addEventListener('resize', () => {
+            asciiCanvas.width = window.innerWidth;
+            asciiCanvas.height = window.innerHeight;
+        });
+
+    </script>
+</body>
+</html>
